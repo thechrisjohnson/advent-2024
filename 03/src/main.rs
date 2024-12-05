@@ -1,17 +1,21 @@
 use std::io::Read;
 
 fn main() {
-    let mut input = String::new();
-    let _data = "7 6 4 2 1
+    let default_data = "7 6 4 2 1
 1 2 7 8 9
 9 7 6 2 1
 1 3 2 4 5
 8 6 4 4 1
 1 3 6 7 9";
 
+    let mut input = String::new();
     let stdin = std::io::stdin();
     let mut handle = stdin.lock();
     handle.read_to_string(&mut input).unwrap();
+
+    if input.is_empty() {
+        input = default_data.to_string();
+    }
 
     let reports = get_levels(&input);
     let mut safe_reports = 0;

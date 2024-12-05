@@ -1,7 +1,5 @@
 use std::io::Read;
 
-const DEFAULT_INPUT: &str = "DEFAULT INPUT";
-
 fn main() {
     let input = get_input().unwrap();
 
@@ -20,3 +18,5 @@ fn get_input() -> Result<String, std::io::Error> {
 
     Ok(input)
 }
+
+const DEFAULT_INPUT: &str = "DEFAULT INPUT";

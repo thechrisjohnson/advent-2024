@@ -1001,16 +1001,13 @@ fn main() {
 21991   30826";
 
     // First step
-    let (first, second) = get_lists(&data);
+    let (first, second) = get_lists(data);
 
     let mut similarity = 0;
-    for first_num in &first
-    {
+    for first_num in &first {
         let mut count = 0;
-        for second_num in &second
-        {
-            if first_num == second_num
-            {
+        for second_num in &second {
+            if first_num == second_num {
                 count += 1;
             }
         }

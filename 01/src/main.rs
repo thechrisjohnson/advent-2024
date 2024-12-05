@@ -1001,7 +1001,7 @@ fn main() {
 21991   30826";
 
     // First step
-    let (mut first, mut second) = get_lists(&data);
+    let (mut first, mut second) = get_lists(data);
 
     println!("First list: {:?}", &first);
     println!("Second list: {:?}", &second);
@@ -1014,8 +1014,7 @@ fn main() {
     println!("Second list sorted: {:?}", &second);
 
     let mut diff = 0;
-    for (i, num) in first.iter().enumerate()
-    {
+    for (i, num) in first.iter().enumerate() {
         let current_diff = *second.get(i).unwrap() - *num;
         diff += current_diff.abs();
     }

@@ -17,8 +17,7 @@ fn main() {
     let mut safe_reports = 0;
 
     // Check each report
-    for report in &reports
-    {
+    for report in &reports {
         if is_safe_report(report) {
             println!("{:?} is safe report!", &report);
             safe_reports += 1;
@@ -26,7 +25,7 @@ fn main() {
             println!("{:?} is NOT safe report!", &report);
         }
     }
-    
+
     println!("Safe reports: {}", &safe_reports);
 }
 
@@ -43,28 +42,24 @@ fn get_levels(list: &str) -> Vec<Vec<i32>> {
     outer
 }
 
-fn is_safe_report(level: &Vec<i32>) -> bool {
+fn is_safe_report(level: &[i32]) -> bool {
     let mut direction: Option<Direction> = None;
     let mut current = level.first().unwrap();
-    for next in level.iter().skip(1)
-    {
+    for next in level.iter().skip(1) {
         let diff = (current - next).abs();
-        if diff < 0 || diff > 3
-        {
+        if !(0..=3).contains(&diff) {
             return false;
         }
 
         match &direction {
-            Some(d) => 
-            {
-                if next > current && *d == Direction::Decreasing {
-                    return false;
-                } else if next < current && *d == Direction::Increasing {
+            Some(d) => {
+                if (next > current && *d == Direction::Decreasing)
+                    || (next < current && *d == Direction::Increasing)
+                {
                     return false;
                 }
-            },
-            None => 
-            {
+            }
+            None => {
                 if next > current {
                     direction = Some(Direction::Increasing)
                 } else {
@@ -80,8 +75,7 @@ fn is_safe_report(level: &Vec<i32>) -> bool {
 }
 
 #[derive(PartialEq)]
-enum Direction
-{
+enum Direction {
     Increasing,
-    Decreasing
+    Decreasing,
 }

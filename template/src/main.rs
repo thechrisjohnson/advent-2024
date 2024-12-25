@@ -1,4 +1,4 @@
-use std::io::Read;
+use std::{fmt, io::Read};
 
 fn main() {
     let input = get_input().unwrap();
@@ -6,7 +6,7 @@ fn main() {
     println!("input: {}", &input);
 }
 
-fn get_input() -> Result<String, std::io::Error> {
+fn get_input() -> Result<String, Error> {
     let mut input = String::new();
     let stdin = std::io::stdin();
     let mut handle = stdin.lock();
@@ -17,6 +17,31 @@ fn get_input() -> Result<String, std::io::Error> {
     }
 
     Ok(input)
+}
+
+#[derive(Debug)]
+struct Error {
+    message: String,
+}
+
+impl Error {
+    fn new(message: String) -> Self {
+        Error { message }
+    }
+}
+
+impl std::error::Error for Error {}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.message)
+    }
+}
+
+impl From<std::io::Error> for Error {
+    fn from(value: std::io::Error) -> Self {
+        Error::new(value.to_string())
+    }
 }
 
 const DEFAULT_INPUT: &str = "DEFAULT INPUT";

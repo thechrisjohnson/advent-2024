@@ -1,25 +1,14 @@
-use std::{fmt, io::Read, sync::mpsc, thread};
+use std::{collections::HashMap, fmt, io::Read};
 
 fn main() {
     let input = get_input().unwrap();
     let stones = get_stones(&input);
 
     let mut total = 0;
+    let mut cache = HashMap::new();
 
-    let (tx, rx) = mpsc::channel();
     for stone in stones {
-        let tx1 = tx.clone();
-        thread::spawn(move || {
-            let x = blink(stone, 1, DEFAULT_BLINKS);
-            tx1.send(x).unwrap();
-        });
-    }
-
-    drop(tx);
-
-    while let Ok(result) = rx.recv() {
-        println!("Result {}", &result);
-        total += result;
+        total += blink(&mut cache, stone, 1, DEFAULT_BLINKS);
     }
 
     println!(
@@ -55,27 +44,50 @@ fn get_input() -> Result<String, Error> {
     Ok(input)
 }
 
-fn blink(number: usize, current_iteration: usize, max_iterations: usize) -> usize {
+fn blink(
+    cache: &mut HashMap<(usize, usize), usize>,
+    number: usize,
+    current_iteration: usize,
+    max_iterations: usize,
+) -> usize {
     if current_iteration == max_iterations {
         if num_digits(number) % 2 == 0 {
             2
         } else {
             1
         }
+    } else if let Some(x) = cache.get(&(number, current_iteration)) {
+        return *x;
     } else if number == 0 {
-        return blink(1, current_iteration + 1, max_iterations);
+        let result = blink(cache, 1, current_iteration + 1, max_iterations);
+        cache.insert((number, current_iteration), result);
+        return result;
     } else {
         let num_digits = num_digits(number);
         if num_digits % 2 == 0 {
             let divisor = TEN.pow(num_digits / 2);
-            return blink(number / divisor, current_iteration + 1, max_iterations)
-                + blink(number % divisor, current_iteration + 1, max_iterations);
+            let result = blink(
+                cache,
+                number / divisor,
+                current_iteration + 1,
+                max_iterations,
+            ) + blink(
+                cache,
+                number % divisor,
+                current_iteration + 1,
+                max_iterations,
+            );
+            cache.insert((number, current_iteration), result);
+            return result;
         } else {
-            return blink(
+            let result = blink(
+                cache,
                 number * STONE_MULTIPLIER,
                 current_iteration + 1,
                 max_iterations,
             );
+            cache.insert((number, current_iteration), result);
+            return result;
         }
     }
 }
